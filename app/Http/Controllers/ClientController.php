@@ -19,7 +19,7 @@ class ClientController extends Controller
         $client = DB::table('clients')->select('id', 'full_name', 'phone_number', 'gender', 'address')->where('phone_number', '=', $phoneNumber)->take(1)->get()[0];
         $vehicles = DB::table('vehicles')->select('brand', 'model', 'color', 'ru_vehicle_registration', 'in_parking')->where('client_id', '=', $client->id)->get();
         $vehicles->push(new Vehicle);
-
+        // TODO: Move to middleware
 		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache");
