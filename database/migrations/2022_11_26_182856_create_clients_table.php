@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('full_name', 128);
             $table->enum('gender', ['male', 'female', 'unspecified'])->default('unspecified');
-            $table->string('phone_number', 15)->unique();
+            $table->string('phone_number', 32)->unique();
             $table->string('address', 128)->nullable();
         });
     }

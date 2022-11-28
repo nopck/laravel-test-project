@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     use HasFactory;
-
+    
+    public $timestamps = false;
+    
     public static function getClients() {
         return DB::table('clients')->join('vehicles', 'clients.id', '=', 'vehicles.client_id')->select('phone_number', 'full_name', 'model', 'ru_vehicle_registration');
     }

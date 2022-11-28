@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     use HasFactory;
-
+    
+    public $timestamps = false;
+    
     public static function getVehiclesByClientId($clientId) {
 		return DB::table('vehicles')->select('brand', 'model', 'color', 'ru_vehicle_registration', 'in_parking')->where('client_id', '=', $clientId)->get();
     }
