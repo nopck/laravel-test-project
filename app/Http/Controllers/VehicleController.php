@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use DB;
+use App\Models\Client;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
     public function destroy($phoneNumber, $ru_vehicle_registration)
     {
-		$vehiclesTable = DB::table('vehicles');
-
-        $client_id = $vehiclesTable->select('client_id')->where('ru_vehicle_registration', '=', $ru_vehicle_registration)->get()[0]->client_id;
-        $vehiclesTable->where('ru_vehicle_registration', '=', $ru_vehicle_registration)->delete();
-        if($vehiclesTable->where('client_id', '=', $client_id)->count() == 0) {
-            DB::table('clients')->where('phone_number', '=', $phoneNumber)->delete();
+        $clientId = Vehicle::getClientIdByRegistration($ru_vehicle_registration);
+        Vehicle::deleteVehicleByRegistration($ru_vehicle_registration);
+        
+        if(Vehicle::getVehiclesByClientId($clientId)->count() == 0) {
+            Client::deleteClientById($clientId);
         }
 		
         return 204;

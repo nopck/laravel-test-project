@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use DB;
+
 use App\Http\Requests\ClientRequest;
 use App\Models\Vehicle;
 use App\Models\Client;
@@ -16,8 +16,8 @@ class ClientController extends Controller
 
     public function show($phoneNumber)
     {
-        $client = DB::table('clients')->select('id', 'full_name', 'phone_number', 'gender', 'address')->where('phone_number', '=', $phoneNumber)->take(1)->get()[0];
-        $vehicles = DB::table('vehicles')->select('brand', 'model', 'color', 'ru_vehicle_registration', 'in_parking')->where('client_id', '=', $client->id)->get();
+        $client = Client::getClientByPhoneNumber($phoneNumber);
+        $vehicles = Vehicle::getVehiclesByClientId($client->id);
         $vehicles->push(new Vehicle);
         // TODO: Move to middleware
 		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -29,19 +29,18 @@ class ClientController extends Controller
     public function store(ClientRequest $request)
     {
         $phoneNumber = $request->input('phone_number');
-        $clientsTable = DB::table('clients');
-        $clientsTable->upsert([
-            'full_name' => $request->input('full_name'),
-            'phone_number' => $phoneNumber,
-            'gender' => $request->input('gender'),
-            'address' => $request->input('address'),
-        ], ['phone_number'], ['full_name', 'gender', 'address']);
-        $clientId = $clientsTable->select('id')->where('phone_number', '=', $phoneNumber)->take(1)->get()[0]->id;
+        Client::updateClientByPhoneNumber(
+            $phoneNumber,
+            $request->input('full_name'),
+            $request->input('gender'),
+            $request->input('address'),
+        );
+        $clientId = Client::getClientIdByPhoneNumber($phoneNumber);
         $vehicles = [];
         $vregs = [];
         foreach($request->ru_vehicle_registration as $index => $reg) {
             if($reg == null) {
-                break;
+                continue;
             }
             $vregs[] = $reg;
             $vehicles[] = [
@@ -54,15 +53,13 @@ class ClientController extends Controller
             ];
         }
         
-        $vehiclesTable = DB::table('vehicles');
         if(count($vregs) == 0) {
-            // Delete empty client
-            $vehiclesTable->where('client_id', '=', $clientId)->delete();
-            $clientsTable->where('id', '=', $clientId)->delete();
+            // Delete client without vehicles
+            Client::deleteClientById($clientId);
         } else {
-            $vehiclesTable->where('client_id', '=', $clientId)->whereNotIn('ru_vehicle_registration', $vregs)->delete();
-            $vehiclesTable->upsert($vehicles, ['ru_vehicle_registration'], ['brand', 'model', 'color', 'in_parking']);
+            Vehicle::updateVehiclesByRegistartionForClientId($vregs, $clientId, $vehicles);
         }
+
         return redirect()->route('clients-show', ['phone_number' => $phoneNumber]);
     }
 }
