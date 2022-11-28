@@ -26,13 +26,13 @@ class ClientRequest extends FormRequest
         return [
             'full_name' => 'required|string|min:3|max:128',
             'gender' => 'required|in:male,female,unspecified',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|string|max:32',
             'address' => 'nullable|string|max:128',
             'brand.*' => 'nullable|string|max:64',
             'model.*' => 'nullable|string|max:128',
             'color.*' => 'nullable|string|max:64',
             'ru_vehicle_registration.*' => 'nullable|string|max:8',
-            'in_parking.*' => 'nullable|boolean|max:8',
+            'in_parking.*' => 'nullable|string|max:8',
 
         ];
     }
