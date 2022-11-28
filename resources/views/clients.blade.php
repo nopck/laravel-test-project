@@ -18,7 +18,7 @@
         <td>{{ $client->model }}</td>
         <td>{{ $client->ru_vehicle_registration }}</td>
         <td>
-            <a href="{{ route('clients-show', ['phone_number' => $client->phone_number]) }}" class="btn btn-primary">✎ </a>
+            <a href="{{ route('clients-show', ['phoneNumber' => $client->phone_number]) }}" class="btn btn-primary">✎ </a>
         </td>
     </tr>
     @endforeach
