@@ -60,10 +60,11 @@ class ClientController extends Controller
         if(count($vregs) == 0) {
             // Delete client without vehicles
             Client::deleteClientById($clientId);
+            return redirect()->route('main-index');
         } else {
             Vehicle::updateVehiclesByRegistartionForClientId($vregs, $clientId, $vehicles);
+            return redirect()->route('clients-show', ['phoneNumber' => $phoneNumber]);
         }
 
-        return redirect()->route('clients-show', ['phone_number' => $phoneNumber]);
     }
 }

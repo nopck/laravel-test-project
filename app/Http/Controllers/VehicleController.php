@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
-    public function destroy($phoneNumber, $ru_vehicle_registration)
+    public function destroy($phoneNumber, $ruVehicleRegistration)
     {
-        $clientId = Vehicle::getClientIdByRegistration($ru_vehicle_registration);
-        Vehicle::deleteVehicleByRegistration($ru_vehicle_registration);
+        $clientId = Vehicle::getClientIdByRegistration($ruVehicleRegistration);
+        Vehicle::deleteVehicleByRegistration($ruVehicleRegistration);
         
         if(Vehicle::getVehiclesByClientId($clientId)->count() == 0) {
             Client::deleteClientById($clientId);
