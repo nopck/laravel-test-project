@@ -28,7 +28,7 @@ class ClientController extends Controller
 
     public function store(ClientRequest $request)
     {
-        $phoneNumber = $request->input('phone_number');
+        $phoneNumber = str_replace('/', '', $request->input('phone_number'));
         Client::updateClientByPhoneNumber(
             $phoneNumber,
             $request->input('full_name'),
