@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Http\Requests\ClientRequest;
 use App\Models\Vehicle;
 use App\Models\Client;
@@ -17,6 +18,9 @@ class ClientController extends Controller
     public function show($phoneNumber)
     {
         $client = Client::getClientByPhoneNumber($phoneNumber);
+        if($client == null) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
         $vehicles = Vehicle::getVehiclesByClientId($client->id);
         $vehicles->push(new Vehicle);
         // TODO: Move to middleware

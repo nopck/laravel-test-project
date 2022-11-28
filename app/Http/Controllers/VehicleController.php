@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response ;
 use App\Models\Client;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -17,6 +18,6 @@ class VehicleController extends Controller
             Client::deleteClientById($clientId);
         }
 		
-        return 204;
+        return response()->noContent(204);
     }
 }
